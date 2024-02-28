@@ -1,0 +1,6 @@
+WINDOW_SIZE = (780, 400)
+BLOCK_SIZE = 20
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
