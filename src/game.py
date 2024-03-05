@@ -3,45 +3,47 @@ from snake import *
 from apple import Apple
 import settings
 
-pygame.init()
-bounds = settings.WINDOW_SIZE
-window = pygame.display.set_mode(bounds)
-pygame.display.set_caption("Snake")
+class Game():
+  def __init__(self):
+    pygame.init()
+    self.run = True
+    pygame.time.delay(100)
+    self.bounds = settings.WINDOW_SIZE
+    self.window = pygame.display.set_mode(self.bounds)    
+    pygame.display.set_caption("Snake")
+    self.block_size = settings.BLOCK_SIZE
+    self.apple = Apple(self.block_size,self.bounds)
+    self.snake = Snake(self.block_size, self.bounds)
 
-block_size = settings.BLOCK_SIZE
-apple = Apple(block_size,bounds)
-snake = Snake(block_size, bounds)
-
-run = True
-while run:
-  pygame.time.delay(100)
-
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      run = False
-
-  keys = pygame.key.get_pressed()
+  def get_state(self):
+    pass
   
-  
-  if keys[pygame.K_LEFT]:
-    snake.steer(Direction.LEFT)
-  elif keys[pygame.K_RIGHT]:
-    snake.steer(Direction.RIGHT)
-  elif keys[pygame.K_UP]:
-    snake.steer(Direction.UP)
-  elif keys[pygame.K_DOWN]:
-    snake.steer(Direction.DOWN)
-  
-  snake.move()
-  if not snake.check_bounds() or not snake.check_tail_collision():
-    apple.respawn()
-    snake.respawn()
-    continue
-  if snake.try_eat_apple(apple):
-    apple.respawn()
-  # print(snake.body)
+  def move(self):
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        self.run = False
 
-  window.fill((0,0,0))
-  apple.draw(pygame, window)
-  snake.draw(pygame, window)
-  pygame.display.update()
+    keys = pygame.key.get_pressed()
+    
+    if keys[pygame.K_LEFT]:
+      self.snake.steer(Direction.LEFT)
+    elif keys[pygame.K_RIGHT]:
+      self.snake.steer(Direction.RIGHT)
+    elif keys[pygame.K_UP]:
+      self.snake.steer(Direction.UP)
+    elif keys[pygame.K_DOWN]:
+      self.snake.steer(Direction.DOWN)
+    self.snake.move()
+  def check(self):
+    if not self.snake.check_bounds() or not self.snake.check_tail_collision():
+      self.apple.respawn()
+      self.snake.respawn()
+      self.run = 0
+      # TODO write return 
+    if self.snake.try_eat_apple(self.apple):
+      self.apple.respawn()
+  def draw(self):
+    self.window.fill((0,0,0))
+    self.apple.draw(pygame, self.window)
+    self.snake.draw(pygame, self.window)
+    pygame.display.update()
