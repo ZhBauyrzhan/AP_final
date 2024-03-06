@@ -34,6 +34,7 @@ class Snake:
     self.respawn()
 
   def respawn(self):
+    self.prev_positions = [(20,20)]
     self.length = 1
     self.body = [(20,20)]
     self.direction = Direction.RIGHT

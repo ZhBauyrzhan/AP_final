@@ -20,6 +20,13 @@ class Game():
     self.reward = 0
     self.score = 0
     self.done = False
+    self.lose_frames = 0
+    self.distance = self.calculate_distance()
+  
+  def calculate_distance(self):
+    head = self.snake.body[0]
+    apple = self.apple
+    return ( abs(head[0] - apple.x) + abs(head[1] - apple.y) )
 
   def _get_map_state(self):
     head = self.snake.body[0]
@@ -66,6 +73,8 @@ class Game():
 
    
   def move(self, action):
+    pygame.time.delay(10)
+
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         self.run = False
@@ -85,22 +94,37 @@ class Game():
      
     self.snake.steer(new_direction)
     self.snake.move()
+    
+    new_distance = self.calculate_distance()
+    if new_distance < self.distance:
+      self.reward += 1
+    elif new_distance > self.distance:
+      self.reward -= 5
+    self.distance = new_distance
+    
     self.frame += 1
+    self.lose_frames += 1
+    self.reward -= 1
     
     return self.get_state()
     
   def check(self):
+    print('checked', self.snake.body[0])
     if not self.snake.check_bounds() or not self.snake.check_tail_collision():
-      self.apple.respawn()
-      self.snake.respawn()
+      print('was', self.snake.body[0])
+      # self.apple.respawn()
+      # self.snake.respawn()
       self.run = 0
       self.done = True
+      print(self.reward)
       self.reward -= 100
+      print(self.reward)
       return 0
     if self.snake.try_eat_apple(self.apple):
       self.apple.respawn()
-      self.reward += 10
+      self.reward += 1000
       self.score += 1
+      self.lose_frames = 0
       return 1
     return 2
   def draw(self):
