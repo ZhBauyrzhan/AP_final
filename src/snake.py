@@ -51,6 +51,9 @@ class Snake:
     self.body = [head, *self.body[:-1]]
     # print(head, self.prev_positions, self.body)
 
+  def check_for_danger(self, possition):
+    return possition in self.body
+
   def steer(self, direction):
     if self.direction == Direction.DOWN and direction != Direction.UP:
       self.direction = direction
